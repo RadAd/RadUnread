@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <CheckBoxPreference
+        android:key="pref_tesla_enable"
+        android:title="Tesla API"
+        android:summary="Enable translation of the Tesla API to your home screen API"
+        android:defaultValue="true" />
+    <CheckBoxPreference
+        android:key="pref_gmail_unread_enable"
+        android:title="Gmail unread"
+        android:summary="Update the badge on the gmail icon with the unread count"
+        android:defaultValue="true" />
+</PreferenceScreen>
