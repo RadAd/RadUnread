@@ -15,7 +15,13 @@ import java.util.Map;
  */
 public class SamsungHomeBadger implements ShortcutBadger.Impl {
     private static final String CONTENT_URI = "content://com.sec.badge/apps?notify=true";
-    private static final String[] CONTENT_PROJECTION = new String[]{"_id","class"};
+    private static final String[] CONTENT_PROJECTION = new String[] { "_id", "class" };
+    private static final String ID = "_id";
+    private static final String BADGECOUNT = "badgecount";
+    private static final String CLASS = "class";
+    private static final String PACKAGE = "package";
+    private static final String QUERY_PACKAGE = "package=?";
+    private static final String QUERY_ID = "_id=?";
 
     private Context mContext;
 
@@ -29,24 +35,26 @@ public class SamsungHomeBadger implements ShortcutBadger.Impl {
         ContentResolver contentResolver = mContext.getContentResolver();
         Cursor cursor = null;
         try {
-            cursor = contentResolver.query(mUri, CONTENT_PROJECTION, "package=?", new String[]{packageName}, null);
+            cursor = contentResolver.query(mUri, CONTENT_PROJECTION, QUERY_PACKAGE, new String[]{packageName}, null);
             if (cursor != null) {
+                int colId = cursor.getColumnIndex(ID);
+                int colClass = cursor.getColumnIndex(CLASS);
                 boolean entryActivityExist = false;
                 while (cursor.moveToNext()) {
-                    int id = cursor.getInt(0);
+                    int id = cursor.getInt(colId);
                     ContentValues contentValues = new ContentValues();
-                    contentValues.put("badgecount", badgeCount);
-                    contentResolver.update(mUri, contentValues, "_id=?", new String[]{String.valueOf(id)});
-                    if (entryActivityName.equals(cursor.getString(cursor.getColumnIndex("class")))) {
+                    contentValues.put(BADGECOUNT, badgeCount);
+                    contentResolver.update(mUri, contentValues, QUERY_ID, new String[]{Integer.toString(id)});
+                    if (entryActivityName.equals(cursor.getString(colClass))) {
                         entryActivityExist = true;
                     }
                 }
 
                 if (!entryActivityExist) {
                     ContentValues contentValues = new ContentValues();
-                    contentValues.put("package", packageName);
-                    contentValues.put("class", entryActivityName);
-                    contentValues.put("badgecount", badgeCount);
+                    contentValues.put(PACKAGE, packageName);
+                    contentValues.put(CLASS, entryActivityName);
+                    contentValues.put(BADGECOUNT, badgeCount);
                     contentResolver.insert(mUri, contentValues);
                 }
             }

@@ -1,5 +1,6 @@
 package au.radsoft.unread.badger;
 
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 
@@ -29,11 +30,12 @@ public class XiaomiHomeBadger implements ShortcutBadger.Impl {
             Object miuiNotification = miuiNotificationClass.newInstance();
             Field field = miuiNotification.getClass().getDeclaredField("messageCount");
             field.setAccessible(true);
-            field.set(miuiNotification, String.valueOf(badgeCount == 0 ? "" : badgeCount));
+            field.set(miuiNotification, badgeCount == 0 ? "" : Integer.toString(badgeCount));
         } catch (Exception e) {
             Intent localIntent = new Intent(INTENT_ACTION);
-            localIntent.putExtra(EXTRA_UPDATE_APP_COMPONENT_NAME, packageName + "/" + entryActivityName);
-            localIntent.putExtra(EXTRA_UPDATE_APP_MSG_TEXT, String.valueOf(badgeCount == 0 ? "" : badgeCount));
+            ComponentName localComponentName = new ComponentName(packageName, entryActivityName);
+            localIntent.putExtra(EXTRA_UPDATE_APP_COMPONENT_NAME, localComponentName.toString());
+            localIntent.putExtra(EXTRA_UPDATE_APP_MSG_TEXT, badgeCount == 0 ? "" : Integer.toString(badgeCount));
             mContext.sendBroadcast(localIntent);
         }
     }

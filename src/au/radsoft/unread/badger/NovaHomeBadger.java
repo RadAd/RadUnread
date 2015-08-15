@@ -1,5 +1,6 @@
 package au.radsoft.unread.badger;
 
+import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Context;
 import android.net.Uri;
@@ -28,14 +29,11 @@ public class NovaHomeBadger implements ShortcutBadger.Impl {
 
     @Override
     public void executeBadge(String packageName, String entryActivityName, int badgeCount) {
-        try {
-            ContentValues contentValues = new ContentValues();
-            contentValues.put(TAG, packageName + "/" + entryActivityName);
-            contentValues.put(COUNT, badgeCount);
-            mContext.getContentResolver().insert(Uri.parse(CONTENT_URI), contentValues);
-        } catch (IllegalArgumentException ex) {
-            /* Fine, TeslaUnread is not installed. */
-        }
+        ContentValues contentValues = new ContentValues();
+        ComponentName localComponentName = new ComponentName(packageName, entryActivityName);
+        contentValues.put(TAG, localComponentName.toString());
+        contentValues.put(COUNT, badgeCount);
+        mContext.getContentResolver().insert(Uri.parse(CONTENT_URI), contentValues);
     }
 
     public static void register(Map<String, Class<? extends ShortcutBadger.Impl>> r)

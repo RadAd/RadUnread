@@ -15,6 +15,7 @@ public class AsusHomeLauncher implements ShortcutBadger.Impl {
     private static final String INTENT_EXTRA_BADGE_COUNT = "badge_count";
     private static final String INTENT_EXTRA_PACKAGENAME = "badge_count_package_name";
     private static final String INTENT_EXTRA_ACTIVITY_NAME = "badge_count_class_name";
+    private static final String INTENT_EXTRA_BADGE_VIP_COUNT = "badge_vip_count";
 
     private Context mContext;
 
@@ -28,7 +29,7 @@ public class AsusHomeLauncher implements ShortcutBadger.Impl {
         intent.putExtra(INTENT_EXTRA_BADGE_COUNT, badgeCount);
         intent.putExtra(INTENT_EXTRA_PACKAGENAME, packageName);
         intent.putExtra(INTENT_EXTRA_ACTIVITY_NAME, entryActivityName);
-        intent.putExtra("badge_vip_count", 0);
+        intent.putExtra(INTENT_EXTRA_BADGE_VIP_COUNT, 0);
         mContext.sendBroadcast(intent);
     }
 

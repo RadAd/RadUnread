@@ -28,7 +28,7 @@ public class SonyHomeBadger implements ShortcutBadger.Impl {
         Intent intent = new Intent(INTENT_ACTION);
         intent.putExtra(INTENT_EXTRA_PACKAGE_NAME, packageName);
         intent.putExtra(INTENT_EXTRA_ACTIVITY_NAME, entryActivityName);
-        intent.putExtra(INTENT_EXTRA_MESSAGE, String.valueOf(badgeCount));
+        intent.putExtra(INTENT_EXTRA_MESSAGE, Integer.toString(badgeCount));
         intent.putExtra(INTENT_EXTRA_SHOW_MESSAGE, badgeCount > 0);
         mContext.sendBroadcast(intent);
     }
