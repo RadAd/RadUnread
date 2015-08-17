@@ -47,9 +47,13 @@ public class ShortcutBadger {
     public static void setBadge(Context context, int badgeCount) {
         setBadge(context, getContextPackageName(context), badgeCount);
     }
-
+    
     public static void setBadge(Context context, String packageName, int badgeCount) {
         setBadge(context, packageName, getEntryActivityName(context, packageName), badgeCount);
+    }
+
+    public static void setBadge(Context context, ComponentName componentName, int badgeCount) {
+        setBadge(context, componentName.getPackageName(), componentName.getClassName(), badgeCount);
     }
     
     public static void setBadge(Context context, String packageName, String activityName, int badgeCount) {
@@ -87,7 +91,7 @@ public class ShortcutBadger {
             mShortcutBadger = new DefaultBadger(context);
         }
 
-        Log.d(LOG_TAG, "Returning badger:" + mShortcutBadger.getClass().getCanonicalName());
+        Log.d(LOG_TAG, "Returning badger: " + mShortcutBadger.getClass().getCanonicalName());
         return mShortcutBadger;
     }
 
@@ -104,11 +108,6 @@ public class ShortcutBadger {
         intent.addCategory(Intent.CATEGORY_HOME);
         ResolveInfo resolveInfo = context.getPackageManager().resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY);
         return resolveInfo.activityInfo.packageName;
-    }
-
-    /*private*/ static String getEntryActivityName(Context context) {
-        ComponentName componentName = context.getPackageManager().getLaunchIntentForPackage(context.getPackageName()).getComponent();
-        return componentName.getClassName();
     }
 
     /*private*/ static String getEntryActivityName(Context context, String packageName) {

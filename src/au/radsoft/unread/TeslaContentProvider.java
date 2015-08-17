@@ -1,5 +1,6 @@
 package au.radsoft.unread;
 
+import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -13,14 +14,6 @@ public class TeslaContentProvider extends android.content.ContentProvider
     private static final String CONTENT_URI = "content://com.teslacoilsw.notifier/unread_count";
     private static final String COUNT = "count";
     private static final String TAG = "tag";
-    
-    public static void executeBadge(Context context, String packageName, String entryActivityName, int badgeCount)
-    {
-        ContentValues cv = new ContentValues();
-        cv.put(TAG, packageName + "/" + entryActivityName);
-        cv.put(COUNT, badgeCount);
-        context.getContentResolver().insert(android.net.Uri.parse(CONTENT_URI), cv);
-    }
     
     private static final Uri mUri = Uri.parse(CONTENT_URI);
     
@@ -47,14 +40,14 @@ public class TeslaContentProvider extends android.content.ContentProvider
         Log.d(LOG_TAG, "insert " + uri.toString());
         if (mUri.equals(uri))
         {
-            Log.d(LOG_TAG, "values " + values.getAsString(TAG) + " " + values.getAsInteger(COUNT));
-            String[] tag = values.getAsString(TAG).split("/", 2);
+            String tag = values.getAsString(TAG);
             int badgeCount = values.getAsInteger(COUNT);
-            //Log.d(LOG_TAG, "values " + tag[0] + " " + tag[1] + " " + badgeCount);
-            if (tag.length == 1)
-                ShortcutBadger.setBadge(getContext(), tag[0], badgeCount);
+            Log.d(LOG_TAG, "values " + tag + " " + badgeCount);
+            ComponentName localComponentName = ComponentName.unflattenFromString(tag);
+            if (localComponentName != null)
+                ShortcutBadger.setBadge(getContext(), localComponentName, badgeCount);
             else
-                ShortcutBadger.setBadge(getContext(), tag[0], tag[1], badgeCount);
+                ShortcutBadger.setBadge(getContext(), tag, badgeCount);
         }
         return null;
     }

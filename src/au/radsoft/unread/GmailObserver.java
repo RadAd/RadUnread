@@ -1,19 +1,21 @@
 package au.radsoft.unread;
 
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.database.ContentObserver;
 import android.net.Uri;
 import android.os.Handler;
-//import android.util.Log;
+import android.util.Log;
 
 class GmailObserver extends ContentObserver
 {
     private static final String LOG_TAG = GmailObserver.class.getSimpleName();
     
     // NOTE Dont forget to unregister: getContentResolver().unregisterContentObserver(observer);
-    static ContentObserver register(Context context, Handler handler)
+    static GmailObserver register(Context context, Handler handler)
     {
-        ContentObserver observer = new GmailObserver(context, handler);
+        GmailObserver observer = new GmailObserver(context, handler);
         for(String account : Gmail.getAllAccountNames(context))
         {
             Uri uri = Gmail.getLabelsUri(account);
@@ -24,11 +26,24 @@ class GmailObserver extends ContentObserver
     }
     
     private final Context context_;
+    private ComponentName componentGmail_;
     
     GmailObserver(Context context, Handler handler)
     {
         super(handler);
         context_ = context;
+        getGmailComponentName();
+    }
+    
+    private boolean getGmailComponentName()
+    {
+        if (componentGmail_ == null)
+        {
+            Intent intentGmail = context_.getPackageManager().getLaunchIntentForPackage(Gmail.AUTHORITY);
+            componentGmail_ = intentGmail == null ? null : intentGmail.getComponent();
+            Log.d(LOG_TAG, "ComponentName: " + componentGmail_);
+        }
+        return componentGmail_ != null;
     }
     
     @Override
@@ -41,17 +56,23 @@ class GmailObserver extends ContentObserver
     public void onChange(boolean selfChange, Uri uri)
     {
         //Log.d(LOG_TAG, "onChange " + uri);
-        updateUnread(context_);
+        updateUnread();
     }
     
-    static void updateUnread(Context context)
+    boolean updateUnread()
     {
-        int unread = Gmail.getUnreadCount(context);
-        ShortcutBadger.setBadge(context, Gmail.AUTHORITY, unread);
+        if (!getGmailComponentName())
+            return false;
+        int unread = Gmail.getUnreadCount(context_);
+        ShortcutBadger.setBadge(context_, componentGmail_, unread);
+        return true;
     }
     
-    static void clearUnread(Context context)
+    boolean clearUnread()
     {
-        ShortcutBadger.setBadge(context, Gmail.AUTHORITY, 0);
+        if (!getGmailComponentName())
+            return false;
+        ShortcutBadger.setBadge(context_, componentGmail_, 0);
+        return true;
     }
 }

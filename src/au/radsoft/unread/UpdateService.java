@@ -27,7 +27,7 @@ public class UpdateService extends android.app.Service implements SharedPreferen
         context.stopService(intent);
     }
     
-    private ContentObserver observerGmail_ = null;
+    private GmailObserver observerGmail_ = null;
     
     public UpdateService()
     {
@@ -74,7 +74,8 @@ public class UpdateService extends android.app.Service implements SharedPreferen
                 {
                     //toast("Gmail start");
                     observerGmail_ = GmailObserver.register(this, null);
-                    GmailObserver.updateUnread(this);
+                    if (!observerGmail_.updateUnread())
+                        toast("Gmail not instaalled.");
                 }
             }
             else
@@ -82,17 +83,18 @@ public class UpdateService extends android.app.Service implements SharedPreferen
                 if (observerGmail_ != null)
                 {
                     //toast("Gmail stop");
+                    observerGmail_.clearUnread();
                     getContentResolver().unregisterContentObserver(observerGmail_);
                     observerGmail_ = null;
-                    GmailObserver.clearUnread(this);
+                    
                 }
             }
         }
     }
     
-    //private void toast(String msg)
-    //{
-        //android.widget.Toast toast = android.widget.Toast.makeText(this, msg, android.widget.Toast.LENGTH_LONG);
-        //toast.show();
-    //}
+    private void toast(String msg)
+    {
+        android.widget.Toast toast = android.widget.Toast.makeText(this, msg, android.widget.Toast.LENGTH_LONG);
+        toast.show();
+    }
 }
