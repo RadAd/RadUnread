@@ -7,6 +7,12 @@ import android.preference.Preference;
 import android.preference.PreferenceManager;
 //import android.util.Log;
 
+// TODO
+// Select Gmail labels
+// Support IMAP/Exchange accounts
+// Support more apps
+// Clear unread badges when disabled (or uninstalled) - will need to get a set of updates applied
+
 //public class RadUnread extends android.app.Activity
 public class RadUnread extends android.preference.PreferenceActivity implements SharedPreferences.OnSharedPreferenceChangeListener
 {

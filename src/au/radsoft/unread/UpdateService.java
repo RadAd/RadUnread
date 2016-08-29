@@ -11,7 +11,7 @@ import android.preference.PreferenceManager;
 
 public class UpdateService extends android.app.Service implements SharedPreferences.OnSharedPreferenceChangeListener
 {
-    private static final String LOG_TAG = UpdateService.class.getSimpleName();
+    //private static final String LOG_TAG = UpdateService.class.getSimpleName();
     
     private static final String PREF_GMAIL_UNREAD_ENABLE = "pref_gmail_unread_enable";
     
@@ -43,6 +43,14 @@ public class UpdateService extends android.app.Service implements SharedPreferen
         sharedPref.registerOnSharedPreferenceChangeListener(this);
         
         onSharedPreferenceChanged(sharedPref, PREF_GMAIL_UNREAD_ENABLE);
+    }
+    
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId)
+    {
+        //Log.d(LOG_TAG, "onStartCommand");
+        super.onStartCommand(intent, flags, startId);
+        return START_STICKY;
     }
     
     @Override
