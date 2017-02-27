@@ -29,10 +29,10 @@ public class ShortcutBadger {
         AdwHomeBadger.register(BADGERS);
         ApexHomeBadger.register(BADGERS);
         AsusHomeLauncher.register(BADGERS);
-        LGHomeBadger.register(BADGERS);
+        //LGHomeBadger.register(BADGERS);
         NewHtcHomeBadger.register(BADGERS);
         //NovaHomeBadger.register(BADGERS);
-        SamsungHomeBadger.register(BADGERS);
+        //SamsungHomeBadger.register(BADGERS);
         SolidHomeBadger.register(BADGERS);
         SonyHomeBadger.register(BADGERS);
         XiaomiHomeBadger.register(BADGERS);

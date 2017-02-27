@@ -1,11 +1,14 @@
 package au.radsoft.unread;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.ContentObserver;
+import android.os.SystemClock;
 import android.preference.PreferenceManager;
 //import android.util.Log;
 
@@ -100,6 +103,26 @@ public class UpdateService extends android.app.Service implements SharedPreferen
         }
     }
     
+    @Override
+    public void onTaskRemoved(Intent rootIntent)
+    {
+        //Log.d(LOG_TAG, "onTaskRemoved");
+        
+        Context appContext = getApplicationContext();
+        Intent restartServiceIntent = new Intent(appContext, UpdateService.class);
+        restartServiceIntent.setPackage(getPackageName());
+
+        // TODO Use JobScheduler API rather than AlarmManager
+        // Restart service http://stackoverflow.com/a/20781110/2566649
+        // http://www.vogella.com/tutorials/AndroidTaskScheduling/article.html
+        
+        PendingIntent restartServicePendingIntent = PendingIntent.getService(appContext, 1, restartServiceIntent, PendingIntent.FLAG_ONE_SHOT);
+        AlarmManager alarmService = (AlarmManager) appContext.getSystemService(Context.ALARM_SERVICE);
+        alarmService.set(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime() + 5 * 60 * 1000, restartServicePendingIntent);
+
+        super.onTaskRemoved(rootIntent);
+    }
+
     private void toast(String msg)
     {
         android.widget.Toast toast = android.widget.Toast.makeText(this, msg, android.widget.Toast.LENGTH_LONG);
